@@ -1,0 +1,63 @@
+{
+  "nav": {
+    "brand": "HSLab Finance",
+    "dashboard": "Dashboard",
+    "predictions": "Predictions",
+    "lightMode": "Light mode",
+    "darkMode": "Dark mode"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "subtitle": "Track your watchlist and monitor stock prices",
+    "searchPlaceholder": "Search stocks by symbol or name...",
+    "searching": "Searching...",
+    "noResults": "No results found for \"{query}\"",
+    "add": "+ Add",
+    "loadingWatchlist": "Loading watchlist...",
+    "emptyTitle": "No stocks in your watchlist",
+    "emptyDesc": "Search for stocks above to start tracking prices and predictions."
+  },
+  "stock": {
+    "backToDashboard": "Back to Dashboard",
+    "loadingData": "Loading stock data...",
+    "priceChart": "Price Chart",
+    "technicalIndicators": "Technical Indicators",
+    "noIndicatorData": "No indicator data available.",
+    "aiPrediction": "AI Prediction",
+    "confidence": "Confidence",
+    "savePrediction": "Save Prediction",
+    "saving": "Saving...",
+    "savedSuccess": "Prediction saved successfully!",
+    "savedFail": "Failed to save prediction.",
+    "noPrediction": "No prediction available for this stock.",
+    "notFound": "Stock not found",
+    "notFoundDesc": "Could not load data for {symbol}.",
+    "removeFromWatchlist": "Remove from watchlist"
+  },
+  "predictions": {
+    "title": "Predictions",
+    "subtitle": "Track AI prediction history and accuracy",
+    "totalPredictions": "Total Predictions",
+    "evaluated": "Evaluated",
+    "correct": "Correct",
+    "accuracy": "Accuracy",
+    "filterPlaceholder": "Filter by stock name or symbol...",
+    "loading": "Loading predictions...",
+    "date": "Date",
+    "stockName": "Stock",
+    "priceAtPrediction": "Price at Prediction",
+    "signal": "Signal",
+    "confidenceLabel": "Confidence",
+    "result": "Result",
+    "pending": "Pending",
+    "correctResult": "Correct",
+    "wrongResult": "Wrong",
+    "emptyTitle": "No predictions yet",
+    "emptyDesc": "Visit a stock detail page to generate and save AI predictions."
+  },
+  "signal": {
+    "up": "Up",
+    "down": "Down",
+    "neutral": "Neutral"
+  }
+}
