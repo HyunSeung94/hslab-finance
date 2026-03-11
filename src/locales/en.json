@@ -55,6 +55,9 @@
     "emptyTitle": "No predictions yet",
     "emptyDesc": "Visit a stock detail page to generate and save AI predictions."
   },
+  "lastUpdate": "Last update",
+  "refresh": "Refresh",
+  "updatedAt": "Updated",
   "signal": {
     "up": "Up",
     "down": "Down",

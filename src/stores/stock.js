@@ -6,7 +6,8 @@ export const useStockStore = defineStore('stock', {
     watchlist: [],
     currentStock: null,
     predictions: [],
-    loading: false
+    loading: false,
+    lastUpdated: null
   }),
 
   getters: {
@@ -69,6 +70,7 @@ export const useStockStore = defineStore('stock', {
       try {
         const { data } = await api.get(`/stocks/price/${symbol}`)
         this.currentStock = data
+        this.lastUpdated = new Date().toISOString()
 
         const idx = this.watchlist.findIndex(s => s.symbol === symbol)
         if (idx !== -1) {
@@ -78,6 +80,16 @@ export const useStockStore = defineStore('stock', {
         return data
       } catch (error) {
         console.error('Failed to fetch stock price:', error)
+        throw error
+      }
+    },
+
+    async fetchStockHistory(symbol) {
+      try {
+        const { data } = await api.get('/stocks/history/' + symbol)
+        return data
+      } catch (error) {
+        console.error('Failed to fetch stock history:', error)
         throw error
       }
     },

@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useStockStore } from '../stores/stock'
 import StockCard from '../components/StockCard.vue'
@@ -11,15 +11,32 @@ const searchQuery = ref('')
 const searchResults = ref([])
 const searching = ref(false)
 const showResults = ref(false)
+const lastUpdated = ref(null)
 let refreshInterval = null
+
+function updateTimestamp() {
+  lastUpdated.value = new Date().toISOString()
+}
+
+const lastUpdatedFormatted = computed(() => {
+  if (!lastUpdated.value) return ''
+  const d = new Date(lastUpdated.value)
+  return d.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false })
+})
+
+async function refreshAllPrices() {
+  await Promise.all(
+    store.watchlist.map(stock => store.fetchStockPrice(stock.symbol))
+  )
+  updateTimestamp()
+}
 
 onMounted(async () => {
   await store.fetchWatchlist()
+  updateTimestamp()
 
   refreshInterval = setInterval(() => {
-    store.watchlist.forEach(stock => {
-      store.fetchStockPrice(stock.symbol)
-    })
+    refreshAllPrices()
   }, 300000) // 5분
 })
 
@@ -121,6 +138,18 @@ function handleInput() {
           <span class="result-add">{{ t('dashboard.add') }}</span>
         </div>
       </div>
+    </div>
+
+    <!-- Last Updated -->
+    <div v-if="lastUpdated" class="update-info">
+      <span class="update-text">{{ t('lastUpdate') }}: {{ lastUpdatedFormatted }}</span>
+      <button class="btn btn-secondary btn-sm refresh-btn" @click="refreshAllPrices">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/>
+          <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+        </svg>
+        {{ t('refresh') }}
+      </button>
     </div>
 
     <!-- Loading -->
@@ -249,6 +278,26 @@ function handleInput() {
   font-size: 13px;
   color: var(--accent);
   font-weight: 600;
+}
+
+.update-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.update-text {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.refresh-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  padding: 4px 12px;
 }
 
 .watchlist-grid {

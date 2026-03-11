@@ -55,6 +55,9 @@
     "emptyTitle": "예측 기록이 없습니다",
     "emptyDesc": "종목 상세 페이지에서 AI 예측을 생성하고 저장하세요."
   },
+  "lastUpdate": "마지막 업데이트",
+  "refresh": "새로고침",
+  "updatedAt": "업데이트",
   "signal": {
     "up": "상승",
     "down": "하락",

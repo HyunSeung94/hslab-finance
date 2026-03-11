@@ -2,7 +2,6 @@
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import PriceChart from './PriceChart.vue'
 
 const props = defineProps({
   stock: {
@@ -25,22 +24,11 @@ const changeSign = computed(() => {
   return props.stock.change > 0 ? '+' : ''
 })
 
-const miniChartData = computed(() => {
-  const prices = props.stock.recentPrices || []
-  if (prices.length === 0) return null
-
-  const color = props.stock.change >= 0 ? '#ef4444' : '#3b82f6'
-
-  return {
-    labels: prices.map((_, i) => i),
-    datasets: [{
-      data: prices,
-      borderColor: color,
-      backgroundColor: 'transparent',
-      fill: false,
-      tension: 0.4
-    }]
-  }
+const updatedAtFormatted = computed(() => {
+  const ua = props.stock.updated_at
+  if (!ua) return ''
+  const d = new Date(ua)
+  return d.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit', hour12: false })
 })
 
 function formatPrice(price) {
@@ -82,8 +70,8 @@ function handleRemove(e) {
       </span>
     </div>
 
-    <div class="card-chart" v-if="miniChartData">
-      <PriceChart :chart-data="miniChartData" :mini="true" />
+    <div class="card-updated" v-if="updatedAtFormatted">
+      <span class="updated-text">{{ t('updatedAt') }} {{ updatedAtFormatted }}</span>
     </div>
   </div>
 </template>
@@ -153,7 +141,14 @@ function handleRemove(e) {
   font-weight: 500;
 }
 
-.card-chart {
+.card-updated {
   margin-top: auto;
+  padding-top: 8px;
+  border-top: 1px solid var(--border-color);
+}
+
+.updated-text {
+  font-size: 12px;
+  color: var(--text-muted);
 }
 </style>

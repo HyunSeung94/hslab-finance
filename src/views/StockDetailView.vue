@@ -19,6 +19,7 @@ const indicators = ref(null)
 const prediction = ref(null)
 const loading = ref(true)
 const savingPrediction = ref(false)
+const lastUpdated = ref(null)
 
 onMounted(async () => {
   await loadStockData()
@@ -29,12 +30,15 @@ async function loadStockData() {
   try {
     const [stockRes, historyRes, indicatorRes, predRes] = await Promise.allSettled([
       api.get(`/stocks/price/${symbol.value}`),
-      api.get(`/stocks/price/${symbol.value}/history`),
+      api.get(`/stocks/history/${symbol.value}`),
       api.get(`/stocks/price/${symbol.value}/indicators`),
       api.get(`/stocks/price/${symbol.value}/prediction`)
     ])
 
-    if (stockRes.status === 'fulfilled') stockData.value = stockRes.value.data
+    if (stockRes.status === 'fulfilled') {
+      stockData.value = stockRes.value.data
+      lastUpdated.value = stockRes.value.data.updated_at || new Date().toISOString()
+    }
     if (historyRes.status === 'fulfilled') priceHistory.value = historyRes.value.data
     if (indicatorRes.status === 'fulfilled') indicators.value = indicatorRes.value.data
     if (predRes.status === 'fulfilled') prediction.value = predRes.value.data
@@ -142,6 +146,9 @@ async function savePrediction() {
               ({{ changeSign }}{{ stockData.changePercent?.toFixed(2) }}%)
             </span>
           </span>
+        </div>
+        <div v-if="lastUpdated" class="last-updated-text">
+          {{ t('lastUpdate') }}: {{ new Date(lastUpdated).toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false }) }}
         </div>
       </div>
 
@@ -270,6 +277,12 @@ async function savePrediction() {
 .change-text {
   font-size: 16px;
   font-weight: 600;
+}
+
+.last-updated-text {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-top: 8px;
 }
 
 .section-title {
