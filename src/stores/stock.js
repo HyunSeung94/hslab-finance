@@ -28,6 +28,10 @@ export const useStockStore = defineStore('stock', {
       try {
         const { data } = await api.get('/watchlist')
         this.watchlist = data.watchlist || data
+        // 각 종목 시세 조회
+        await Promise.all(
+          this.watchlist.map(stock => this.fetchStockPrice(stock.symbol))
+        )
       } catch (error) {
         console.error('Failed to fetch watchlist:', error)
       } finally {
@@ -39,6 +43,8 @@ export const useStockStore = defineStore('stock', {
       try {
         const { data } = await api.post('/watchlist', { symbol, name })
         this.watchlist.push(data)
+        // 추가 후 바로 시세 조회
+        await this.fetchStockPrice(symbol)
         return data
       } catch (error) {
         console.error('Failed to add stock:', error)
