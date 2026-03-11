@@ -34,6 +34,7 @@
     "noPrediction": "No prediction available for this stock.",
     "notFound": "Stock not found",
     "notFoundDesc": "Could not load data for {symbol}.",
+    "minuteShort": "m",
     "removeFromWatchlist": "Remove from watchlist"
   },
   "predictions": {

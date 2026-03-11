@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, onMounted, inject } from 'vue'
+import { ref, computed, onMounted, onUnmounted, inject } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useStockStore } from '../stores/stock'
@@ -21,9 +21,29 @@ const prediction = ref(null)
 const loading = ref(true)
 const savingPrediction = ref(false)
 const lastUpdated = ref(null)
+const refreshMinutes = ref(parseInt(localStorage.getItem('refreshInterval') || '5'))
+let refreshInterval = null
+
+function startInterval() {
+  if (refreshInterval) clearInterval(refreshInterval)
+  refreshInterval = setInterval(() => {
+    loadStockData()
+  }, refreshMinutes.value * 60 * 1000)
+}
+
+function changeInterval(minutes) {
+  refreshMinutes.value = minutes
+  localStorage.setItem('refreshInterval', String(minutes))
+  startInterval()
+}
 
 onMounted(async () => {
   await loadStockData()
+  startInterval()
+})
+
+onUnmounted(() => {
+  if (refreshInterval) clearInterval(refreshInterval)
 })
 
 async function loadStockData() {
@@ -174,8 +194,18 @@ async function savePrediction() {
             </span>
           </span>
         </div>
-        <div v-if="lastUpdated" class="last-updated-text">
-          {{ t('lastUpdate') }}: {{ lastUpdated.slice(11, 19) }}
+        <div v-if="lastUpdated" class="update-row">
+          <span class="last-updated-text">{{ t('lastUpdate') }}: {{ lastUpdated.slice(11, 19) }}</span>
+          <div class="interval-selector">
+            <button
+              v-for="min in [5, 10, 15, 20]"
+              :key="min"
+              :class="['interval-btn', { active: refreshMinutes === min }]"
+              @click="changeInterval(min)"
+            >
+              {{ min }}{{ t('stock.minuteShort') }}
+            </button>
+          </div>
         </div>
       </div>
 
@@ -312,10 +342,39 @@ async function savePrediction() {
   font-weight: 600;
 }
 
+.update-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 8px;
+}
+
 .last-updated-text {
   font-size: 13px;
   color: var(--text-muted);
-  margin-top: 8px;
+}
+
+.interval-selector {
+  display: flex;
+  gap: 4px;
+}
+
+.interval-btn {
+  padding: 2px 8px;
+  font-size: 11px;
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.interval-btn.active {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
 }
 
 .section-title {
