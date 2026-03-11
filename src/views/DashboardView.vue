@@ -12,6 +12,7 @@ const searchResults = ref([])
 const searching = ref(false)
 const showResults = ref(false)
 const lastUpdated = ref(null)
+const refreshMinutes = ref(parseInt(localStorage.getItem('refreshInterval') || '5'))
 let refreshInterval = null
 
 function updateTimestamp() {
@@ -31,13 +32,23 @@ async function refreshAllPrices() {
   updateTimestamp()
 }
 
+function startInterval() {
+  if (refreshInterval) clearInterval(refreshInterval)
+  refreshInterval = setInterval(() => {
+    refreshAllPrices()
+  }, refreshMinutes.value * 60 * 1000)
+}
+
+function changeInterval(minutes) {
+  refreshMinutes.value = minutes
+  localStorage.setItem('refreshInterval', String(minutes))
+  startInterval()
+}
+
 onMounted(async () => {
   await store.fetchWatchlist()
   updateTimestamp()
-
-  refreshInterval = setInterval(() => {
-    refreshAllPrices()
-  }, 300000) // 5분
+  startInterval()
 })
 
 onUnmounted(() => {
@@ -140,9 +151,19 @@ function handleInput() {
       </div>
     </div>
 
-    <!-- Last Updated -->
+    <!-- Last Updated & Interval -->
     <div v-if="lastUpdated" class="update-info">
       <span class="update-text">{{ t('lastUpdate') }}: {{ lastUpdatedFormatted }}</span>
+      <div class="interval-selector">
+        <button
+          v-for="min in [5, 10, 15, 20]"
+          :key="min"
+          :class="['btn', 'btn-sm', 'interval-btn', { active: refreshMinutes === min }]"
+          @click="changeInterval(min)"
+        >
+          {{ min }}{{ t('dashboard.minuteShort') }}
+        </button>
+      </div>
       <button class="btn btn-secondary btn-sm refresh-btn" @click="refreshAllPrices">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/>
@@ -290,6 +311,29 @@ function handleInput() {
 .update-text {
   font-size: 13px;
   color: var(--text-secondary);
+}
+
+.interval-selector {
+  display: flex;
+  gap: 4px;
+}
+
+.interval-btn {
+  padding: 3px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.interval-btn.active {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
 }
 
 .refresh-btn {

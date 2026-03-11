@@ -15,6 +15,7 @@
     "add": "+ Add",
     "loadingWatchlist": "Loading watchlist...",
     "emptyTitle": "No stocks in your watchlist",
+    "minuteShort": "m",
     "emptyDesc": "Search for stocks above to start tracking prices and predictions."
   },
   "stock": {
