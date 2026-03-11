@@ -74,7 +74,8 @@ export const useStockStore = defineStore('stock', {
 
         const idx = this.watchlist.findIndex(s => s.symbol === symbol)
         if (idx !== -1) {
-          this.watchlist[idx] = { ...this.watchlist[idx], ...data }
+          const existing = this.watchlist[idx]
+          this.watchlist[idx] = { ...existing, ...data, name: existing.name || data.name }
         }
 
         return data
