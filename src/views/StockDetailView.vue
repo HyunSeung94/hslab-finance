@@ -129,10 +129,10 @@ async function savePrediction() {
   try {
     await store.createPrediction({
       symbol: symbol.value,
-      name: stockData.value?.name,
-      signal: prediction.value.signal,
+      symbol_name: stockData.value?.name,
+      direction: prediction.value.signal === '상승' ? 'up' : 'down',
       confidence: prediction.value.confidence,
-      price: stockData.value?.price,
+      target_price: stockData.value?.price,
       indicators: indicators.value
     })
     alert(t('stock.savedSuccess'))
