@@ -50,8 +50,8 @@ function handleRemove(e) {
   <div class="card card-hover stock-card" @click="handleClick">
     <div class="card-header">
       <div class="stock-info">
-        <span class="stock-symbol">{{ stock.symbol }}</span>
         <span class="stock-name">{{ stock.name || stock.symbol }}</span>
+        <span class="stock-symbol">{{ stock.symbol }}</span>
       </div>
       <button class="btn-icon remove-btn" @click="handleRemove" :title="t('stock.removeFromWatchlist')">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -96,19 +96,19 @@ function handleRemove(e) {
   gap: 2px;
 }
 
-.stock-symbol {
+.stock-name {
   font-size: 16px;
   font-weight: 700;
-  letter-spacing: 0.5px;
-}
-
-.stock-name {
-  font-size: 13px;
-  color: var(--text-secondary);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   max-width: 180px;
+}
+
+.stock-symbol {
+  font-size: 13px;
+  color: var(--text-secondary);
+  letter-spacing: 0.5px;
 }
 
 .remove-btn {
