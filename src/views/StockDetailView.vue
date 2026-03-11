@@ -15,6 +15,7 @@ const { t } = useI18n()
 const symbol = computed(() => route.params.symbol)
 const stockData = ref(null)
 const priceHistory = ref([])
+const intradayHistory = ref([])
 const indicators = ref(null)
 const prediction = ref(null)
 const loading = ref(true)
@@ -28,9 +29,10 @@ onMounted(async () => {
 async function loadStockData() {
   loading.value = true
   try {
-    const [stockRes, historyRes, indicatorRes, predRes] = await Promise.allSettled([
+    const [stockRes, historyRes, intradayRes, indicatorRes, predRes] = await Promise.allSettled([
       api.get(`/stocks/price/${symbol.value}`),
       api.get(`/stocks/history/${symbol.value}`),
+      api.get(`/stocks/intraday/${symbol.value}`),
       api.get(`/stocks/price/${symbol.value}/indicators`),
       api.get(`/stocks/price/${symbol.value}/prediction`)
     ])
@@ -40,6 +42,7 @@ async function loadStockData() {
       lastUpdated.value = stockRes.value.data.updated_at || new Date().toISOString()
     }
     if (historyRes.status === 'fulfilled') priceHistory.value = historyRes.value.data
+    if (intradayRes.status === 'fulfilled') intradayHistory.value = intradayRes.value.data
     if (indicatorRes.status === 'fulfilled') indicators.value = indicatorRes.value.data
     if (predRes.status === 'fulfilled') prediction.value = predRes.value.data
   } catch (error) {
@@ -57,6 +60,30 @@ const changeClass = computed(() => {
 const changeSign = computed(() => {
   if (!stockData.value?.change) return ''
   return stockData.value.change > 0 ? '+' : ''
+})
+
+const intradayChartData = computed(() => {
+  if (!intradayHistory.value.length) return null
+
+  const labels = intradayHistory.value.map(p => p.timestamp.slice(11, 16))
+  const prices = intradayHistory.value.map(p => p.price)
+  const isUp = prices.length >= 2 && prices[prices.length - 1] >= prices[0]
+  const lineColor = isUp ? '#ef4444' : '#3b82f6'
+
+  return {
+    labels,
+    datasets: [{
+      label: '가격',
+      data: prices,
+      borderColor: lineColor,
+      backgroundColor: lineColor + '15',
+      fill: true,
+      tension: 0.3,
+      pointRadius: 2,
+      pointHitRadius: 10,
+      borderWidth: 2
+    }]
+  }
 })
 
 const chartData = computed(() => {
@@ -148,11 +175,17 @@ async function savePrediction() {
           </span>
         </div>
         <div v-if="lastUpdated" class="last-updated-text">
-          {{ t('lastUpdate') }}: {{ new Date(lastUpdated).toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false }) }}
+          {{ t('lastUpdate') }}: {{ lastUpdated.slice(11, 19) }}
         </div>
       </div>
 
-      <!-- Price Chart -->
+      <!-- Intraday Chart -->
+      <div class="card mb-4" v-if="intradayChartData">
+        <h3 class="section-title">{{ t('stock.intradayChart') }}</h3>
+        <PriceChart :chart-data="intradayChartData" />
+      </div>
+
+      <!-- Daily Price Chart -->
       <div class="card mb-4" v-if="chartData">
         <h3 class="section-title">{{ t('stock.priceChart') }}</h3>
         <PriceChart :chart-data="chartData" />

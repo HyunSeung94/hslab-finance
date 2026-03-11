@@ -20,7 +20,8 @@
   "stock": {
     "backToDashboard": "Back to Dashboard",
     "loadingData": "Loading stock data...",
-    "priceChart": "Price Chart",
+    "intradayChart": "Intraday Chart",
+    "priceChart": "Daily Chart",
     "technicalIndicators": "Technical Indicators",
     "noIndicatorData": "No indicator data available.",
     "aiPrediction": "AI Prediction",

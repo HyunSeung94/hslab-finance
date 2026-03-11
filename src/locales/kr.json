@@ -20,7 +20,8 @@
   "stock": {
     "backToDashboard": "대시보드로 돌아가기",
     "loadingData": "종목 데이터 불러오는 중...",
-    "priceChart": "가격 차트",
+    "intradayChart": "실시간 차트",
+    "priceChart": "일봉 차트",
     "technicalIndicators": "기술적 지표",
     "noIndicatorData": "지표 데이터가 없습니다.",
     "aiPrediction": "AI 예측",
