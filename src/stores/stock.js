@@ -27,7 +27,7 @@ export const useStockStore = defineStore('stock', {
       this.loading = true
       try {
         const { data } = await api.get('/watchlist')
-        this.watchlist = data
+        this.watchlist = data.watchlist || data
       } catch (error) {
         console.error('Failed to fetch watchlist:', error)
       } finally {
@@ -35,9 +35,9 @@ export const useStockStore = defineStore('stock', {
       }
     },
 
-    async addStock(symbol) {
+    async addStock(symbol, name = '') {
       try {
-        const { data } = await api.post('/watchlist', { symbol })
+        const { data } = await api.post('/watchlist', { symbol, name })
         this.watchlist.push(data)
         return data
       } catch (error) {

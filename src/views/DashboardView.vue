@@ -49,7 +49,7 @@ async function searchStocks() {
 
 async function addStock(result) {
   try {
-    await store.addStock(result.symbol)
+    await store.addStock(result.symbol, result.name)
     searchQuery.value = ''
     searchResults.value = []
     showResults.value = false
