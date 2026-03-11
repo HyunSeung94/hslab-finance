@@ -48,7 +48,10 @@ export const useStockStore = defineStore('stock', {
 
     async removeStock(symbol) {
       try {
-        await api.delete(`/watchlist/${symbol}`)
+        const stock = this.watchlist.find(s => s.symbol === symbol)
+        if (stock?.id) {
+          await api.delete(`/watchlist/${stock.id}`)
+        }
         this.watchlist = this.watchlist.filter(s => s.symbol !== symbol)
       } catch (error) {
         console.error('Failed to remove stock:', error)
@@ -58,7 +61,7 @@ export const useStockStore = defineStore('stock', {
 
     async fetchStockPrice(symbol) {
       try {
-        const { data } = await api.get(`/stock/${symbol}`)
+        const { data } = await api.get(`/stocks/price/${symbol}`)
         this.currentStock = data
 
         const idx = this.watchlist.findIndex(s => s.symbol === symbol)

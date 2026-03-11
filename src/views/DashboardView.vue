@@ -20,7 +20,7 @@ onMounted(async () => {
     store.watchlist.forEach(stock => {
       store.fetchStockPrice(stock.symbol)
     })
-  }, 60000)
+  }, 300000) // 5분
 })
 
 onUnmounted(() => {
@@ -37,7 +37,7 @@ async function searchStocks() {
   searching.value = true
   showResults.value = true
   try {
-    const { data } = await api.get('/stock/search', { params: { q: searchQuery.value } })
+    const { data } = await api.get('/stocks/search', { params: { keyword: searchQuery.value } })
     searchResults.value = data
   } catch (error) {
     console.error('Search failed:', error)

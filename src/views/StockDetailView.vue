@@ -28,10 +28,10 @@ async function loadStockData() {
   loading.value = true
   try {
     const [stockRes, historyRes, indicatorRes, predRes] = await Promise.allSettled([
-      api.get(`/stock/${symbol.value}`),
-      api.get(`/stock/${symbol.value}/history`),
-      api.get(`/stock/${symbol.value}/indicators`),
-      api.get(`/stock/${symbol.value}/prediction`)
+      api.get(`/stocks/price/${symbol.value}`),
+      api.get(`/stocks/price/${symbol.value}/history`),
+      api.get(`/stocks/price/${symbol.value}/indicators`),
+      api.get(`/stocks/price/${symbol.value}/prediction`)
     ])
 
     if (stockRes.status === 'fulfilled') stockData.value = stockRes.value.data
