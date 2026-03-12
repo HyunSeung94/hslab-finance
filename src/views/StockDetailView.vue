@@ -22,28 +22,32 @@ const loading = ref(true)
 const savingPrediction = ref(false)
 const lastUpdated = ref(null)
 const refreshMinutes = ref(parseInt(localStorage.getItem('refreshInterval') || '5'))
-let refreshInterval = null
+let refreshTimer = null
 
-function startInterval() {
-  if (refreshInterval) clearInterval(refreshInterval)
-  refreshInterval = setInterval(() => {
-    loadStockData()
-  }, refreshMinutes.value * 60 * 1000)
+function scheduleNextRefresh() {
+  if (refreshTimer) clearTimeout(refreshTimer)
+  const now = new Date()
+  const interval = refreshMinutes.value * 60 * 1000
+  const msUntilNext = interval - (now.getTime() % interval)
+  refreshTimer = setTimeout(async () => {
+    await loadStockData()
+    scheduleNextRefresh()
+  }, msUntilNext)
 }
 
 function changeInterval(minutes) {
   refreshMinutes.value = minutes
   localStorage.setItem('refreshInterval', String(minutes))
-  startInterval()
+  scheduleNextRefresh()
 }
 
 onMounted(async () => {
   await loadStockData()
-  startInterval()
+  scheduleNextRefresh()
 })
 
 onUnmounted(() => {
-  if (refreshInterval) clearInterval(refreshInterval)
+  if (refreshTimer) clearTimeout(refreshTimer)
 })
 
 async function loadStockData() {
@@ -93,7 +97,7 @@ const intradayChartData = computed(() => {
   return {
     labels,
     datasets: [{
-      label: '가격',
+      label: t('stock.intradayChart'),
       data: prices,
       borderColor: lineColor,
       backgroundColor: lineColor + '15',
@@ -133,9 +137,14 @@ const chartData = computed(() => {
 const signalClass = computed(() => {
   if (!prediction.value?.signal) return ''
   const s = prediction.value.signal
-  if (s === '상승') return 'signal-up'
-  if (s === '하락') return 'signal-down'
+  if (s === 'up') return 'signal-up'
+  if (s === 'down') return 'signal-down'
   return 'signal-neutral'
+})
+
+const translatedReason = computed(() => {
+  if (!prediction.value?.reason) return ''
+  return prediction.value.reason.split(', ').map(key => t(`reason.${key}`)).join(', ')
 })
 
 function formatPrice(price) {
@@ -150,7 +159,7 @@ async function savePrediction() {
     await store.createPrediction({
       symbol: symbol.value,
       symbol_name: stockData.value?.name,
-      direction: prediction.value.signal === '상승' ? 'up' : 'down',
+      direction: prediction.value.signal,
       confidence: prediction.value.confidence,
       target_price: stockData.value?.price,
       indicators: indicators.value
@@ -263,10 +272,10 @@ async function savePrediction() {
           <h3 class="section-title">{{ t('stock.aiPrediction') }}</h3>
           <div v-if="prediction" class="prediction-content">
             <div :class="['signal-badge', signalClass]">
-              <span class="signal-icon" v-if="prediction.signal === '상승'">&#9650;</span>
-              <span class="signal-icon" v-else-if="prediction.signal === '하락'">&#9660;</span>
+              <span class="signal-icon" v-if="prediction.signal === 'up'">&#9650;</span>
+              <span class="signal-icon" v-else-if="prediction.signal === 'down'">&#9660;</span>
               <span class="signal-icon" v-else>&#9654;</span>
-              {{ prediction.signal }}
+              {{ t(`signal.${prediction.signal}`) }}
             </div>
             <div class="confidence-section">
               <span class="confidence-label">{{ t('stock.confidence') }}</span>
@@ -275,7 +284,7 @@ async function savePrediction() {
               </div>
               <span class="confidence-value">{{ prediction.confidence?.toFixed(1) }}%</span>
             </div>
-            <p v-if="prediction.reason" class="prediction-reason">{{ prediction.reason }}</p>
+            <p v-if="prediction.reason" class="prediction-reason">{{ translatedReason }}</p>
             <button class="btn btn-primary save-btn" @click="savePrediction" :disabled="savingPrediction">
               <span v-if="savingPrediction" class="spinner" style="width:14px;height:14px;border-width:2px;"></span>
               {{ savingPrediction ? t('stock.saving') : t('stock.savePrediction') }}

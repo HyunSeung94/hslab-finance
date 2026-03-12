@@ -65,5 +65,19 @@
     "up": "상승",
     "down": "하락",
     "neutral": "보합"
+  },
+  "reason": {
+    "rsi_oversold": "RSI 과매도 구간",
+    "rsi_near_oversold": "RSI 매도 근접",
+    "rsi_overbought": "RSI 과매수 구간",
+    "rsi_near_overbought": "RSI 매수 근접",
+    "sma20_above": "20일 이평선 위",
+    "sma20_below": "20일 이평선 아래",
+    "sma50_above": "50일 이평선 위",
+    "sma50_below": "50일 이평선 아래",
+    "macd_positive": "MACD 양수 (상승 모멘텀)",
+    "macd_negative": "MACD 음수 (하락 모멘텀)",
+    "bb_lower_break": "볼린저 하단 돌파 (반등 가능)",
+    "bb_upper_break": "볼린저 상단 돌파 (조정 가능)"
   }
 }

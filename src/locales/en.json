@@ -65,5 +65,19 @@
     "up": "Up",
     "down": "Down",
     "neutral": "Neutral"
+  },
+  "reason": {
+    "rsi_oversold": "RSI oversold zone",
+    "rsi_near_oversold": "RSI near oversold",
+    "rsi_overbought": "RSI overbought zone",
+    "rsi_near_overbought": "RSI near overbought",
+    "sma20_above": "Above 20-day SMA",
+    "sma20_below": "Below 20-day SMA",
+    "sma50_above": "Above 50-day SMA",
+    "sma50_below": "Below 50-day SMA",
+    "macd_positive": "MACD positive (bullish momentum)",
+    "macd_negative": "MACD negative (bearish momentum)",
+    "bb_lower_break": "Bollinger lower band breakout (possible bounce)",
+    "bb_upper_break": "Bollinger upper band breakout (possible correction)"
   }
 }
