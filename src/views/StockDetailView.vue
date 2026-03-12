@@ -89,10 +89,10 @@ const changeSign = computed(() => {
 const intradayChartData = computed(() => {
   if (!intradayHistory.value.length) return null
 
-  // 장중 시간만 필터 (09:00 ~ 15:30)
+  // 장중 + 시간외 (09:00 ~ 18:00)
   const filtered = intradayHistory.value.filter(p => {
     const time = p.timestamp.slice(11, 16)
-    return time >= '09:00' && time <= '15:30'
+    return time >= '09:00' && time <= '18:00'
   })
   if (!filtered.length) return null
 
