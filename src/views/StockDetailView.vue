@@ -89,8 +89,15 @@ const changeSign = computed(() => {
 const intradayChartData = computed(() => {
   if (!intradayHistory.value.length) return null
 
-  const labels = intradayHistory.value.map(p => p.timestamp.slice(11, 16))
-  const prices = intradayHistory.value.map(p => p.price)
+  // 장중 시간만 필터 (09:00 ~ 15:30)
+  const filtered = intradayHistory.value.filter(p => {
+    const time = p.timestamp.slice(11, 16)
+    return time >= '09:00' && time <= '15:30'
+  })
+  if (!filtered.length) return null
+
+  const labels = filtered.map(p => p.timestamp.slice(11, 16))
+  const prices = filtered.map(p => p.price)
   const isUp = prices.length >= 2 && prices[prices.length - 1] >= prices[0]
   const lineColor = isUp ? '#ef4444' : '#3b82f6'
 
