@@ -22,6 +22,12 @@ const routes = [
     name: 'Predictions',
     component: () => import('../views/PredictionsView.vue'),
     meta: { requiresAuth: true }
+  },
+  {
+    path: '/settings/default-dashboard',
+    name: 'DefaultDashboard',
+    component: () => import('../views/DefaultDashboardView.vue'),
+    meta: { requiresAuth: true }
   }
 ]
 

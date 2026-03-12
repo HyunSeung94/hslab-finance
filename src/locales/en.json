@@ -19,7 +19,10 @@
     "emptyDesc": "Search for stocks above to start tracking prices and predictions.",
     "todayVisitors": "Today",
     "totalVisitors": "Total",
-    "guestMessage": "Sign in to create your own watchlist."
+    "guestMessage": "Sign in to create your own watchlist.",
+    "manageDefault": "Manage Guest Dashboard",
+    "defaultTitle": "Guest Dashboard Settings",
+    "defaultSubtitle": "Manage default stocks shown to non-logged-in users."
   },
   "stock": {
     "backToDashboard": "Back to Dashboard",
