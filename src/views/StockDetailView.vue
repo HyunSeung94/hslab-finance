@@ -166,7 +166,12 @@ async function savePrediction() {
     })
     alert(t('stock.savedSuccess'))
   } catch (error) {
-    alert(t('stock.savedFail'))
+    const msg = error?.response?.data?.error
+    if (msg && msg.includes('이미')) {
+      alert(t('stock.alreadySaved'))
+    } else {
+      alert(t('stock.savedFail'))
+    }
   } finally {
     savingPrediction.value = false
   }

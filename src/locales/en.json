@@ -33,6 +33,7 @@
     "saving": "Saving...",
     "savedSuccess": "Prediction saved successfully!",
     "savedFail": "Failed to save prediction.",
+    "alreadySaved": "Prediction already saved for today.",
     "noPrediction": "No prediction available for this stock.",
     "notFound": "Stock not found",
     "notFoundDesc": "Could not load data for {symbol}.",
