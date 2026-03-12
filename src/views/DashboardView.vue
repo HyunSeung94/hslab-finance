@@ -2,11 +2,14 @@
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useStockStore } from '../stores/stock'
+import { useAuthStore } from '../stores/auth'
 import StockCard from '../components/StockCard.vue'
 import api from '../api'
 
 const { t } = useI18n()
 const store = useStockStore()
+const authStore = useAuthStore()
+const isLoggedIn = computed(() => authStore.isAuthenticated)
 const searchQuery = ref('')
 const searchResults = ref([])
 const searching = ref(false)
@@ -113,8 +116,14 @@ function handleInput() {
       </div>
     </div>
 
-    <!-- Search -->
-    <div class="search-section">
+    <!-- Guest Banner -->
+    <div v-if="!isLoggedIn" class="guest-banner">
+      <span>{{ t('dashboard.guestMessage') }}</span>
+      <router-link to="/login" class="btn btn-primary btn-sm">{{ t('auth.login') }}</router-link>
+    </div>
+
+    <!-- Search (회원만) -->
+    <div v-if="isLoggedIn" class="search-section">
       <div class="search-wrapper">
         <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
@@ -176,6 +185,7 @@ function handleInput() {
         v-for="stock in store.watchlist"
         :key="stock.symbol"
         :stock="stock"
+        :removable="isLoggedIn"
         @remove="removeStock"
       />
     </div>
@@ -380,6 +390,20 @@ function handleInput() {
   font-size: 14px;
   max-width: 360px;
   margin: 0 auto;
+}
+
+.guest-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 18px;
+  margin-bottom: 20px;
+  background: rgba(59, 130, 246, 0.08);
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  border-radius: var(--radius-md);
+  font-size: 14px;
+  color: var(--text-secondary);
 }
 
 @media (max-width: 640px) {

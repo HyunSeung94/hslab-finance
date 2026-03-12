@@ -61,12 +61,15 @@ function toggleLocale() {
         </nav>
 
         <div class="navbar-actions">
-          <span v-if="authStore.isAuthenticated" class="user-email">{{ authStore.userEmail }}</span>
-          <button v-if="authStore.isAuthenticated" class="btn-icon logout-btn" @click="authStore.logout()" :title="t('auth.logout')">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
-            </svg>
-          </button>
+          <template v-if="authStore.isAuthenticated">
+            <span class="user-email">{{ authStore.userEmail }}</span>
+            <button class="btn-icon logout-btn" @click="authStore.logout()" :title="t('auth.logout')">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
+              </svg>
+            </button>
+          </template>
+          <router-link v-else to="/login" class="btn btn-primary btn-sm nav-login-btn">{{ t('auth.login') }}</router-link>
           <button class="btn-icon lang-toggle" @click="toggleLocale" :title="currentLocale === 'kr' ? 'English' : '한국어'">
             {{ currentLocale === 'kr' ? 'EN' : 'KR' }}
           </button>
@@ -189,6 +192,13 @@ function toggleLocale() {
   width: 36px;
   height: 36px;
   flex-shrink: 0;
+}
+
+.nav-login-btn {
+  font-size: 13px;
+  padding: 5px 14px;
+  text-decoration: none;
+  white-space: nowrap;
 }
 
 .main-content {

@@ -18,7 +18,8 @@
     "minuteShort": "m",
     "emptyDesc": "Search for stocks above to start tracking prices and predictions.",
     "todayVisitors": "Today",
-    "totalVisitors": "Total"
+    "totalVisitors": "Total",
+    "guestMessage": "Sign in to create your own watchlist."
   },
   "stock": {
     "backToDashboard": "Back to Dashboard",
