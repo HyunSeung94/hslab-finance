@@ -1,49 +1,13 @@
 <script setup>
-import { ref, inject } from 'vue'
-import { useRouter } from 'vue-router'
+import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useAuthStore } from '../stores/auth'
 
-const router = useRouter()
 const authStore = useAuthStore()
-const isDark = inject('isDark')
 const { t } = useI18n()
 
-const isSignup = ref(false)
-const email = ref('')
-const password = ref('')
-const confirmPassword = ref('')
 const error = ref('')
-const loading = ref(false)
 const socialLoading = ref('')
-const signupSuccess = ref(false)
-
-async function handleSubmit() {
-  error.value = ''
-  signupSuccess.value = false
-
-  if (!email.value || !password.value) return
-
-  if (isSignup.value && password.value !== confirmPassword.value) {
-    error.value = t('auth.passwordMismatch')
-    return
-  }
-
-  loading.value = true
-  try {
-    if (isSignup.value) {
-      await authStore.signup(email.value, password.value)
-      signupSuccess.value = true
-    } else {
-      await authStore.login(email.value, password.value)
-      router.push('/')
-    }
-  } catch (err) {
-    error.value = isSignup.value ? t('auth.signupFailed') : t('auth.loginFailed')
-  } finally {
-    loading.value = false
-  }
-}
 
 async function handleSocialLogin(provider) {
   socialLoading.value = provider
@@ -55,12 +19,6 @@ async function handleSocialLogin(provider) {
   } finally {
     socialLoading.value = ''
   }
-}
-
-function toggleMode() {
-  isSignup.value = !isSignup.value
-  error.value = ''
-  signupSuccess.value = false
 }
 </script>
 
@@ -74,57 +32,9 @@ function toggleMode() {
         <h1>HSLab Finance</h1>
       </div>
 
-      <h2 class="login-title">{{ isSignup ? t('auth.signup') : t('auth.login') }}</h2>
+      <h2 class="login-title">{{ t('auth.login') }}</h2>
 
-      <div v-if="signupSuccess" class="success-message">
-        {{ t('auth.checkEmail') }}
-      </div>
-
-      <form v-else @submit.prevent="handleSubmit" class="login-form">
-        <div class="form-group">
-          <label>{{ t('auth.email') }}</label>
-          <input
-            v-model="email"
-            type="email"
-            class="input"
-            autocomplete="email"
-            required
-          />
-        </div>
-
-        <div class="form-group">
-          <label>{{ t('auth.password') }}</label>
-          <input
-            v-model="password"
-            type="password"
-            class="input"
-            autocomplete="current-password"
-            required
-          />
-        </div>
-
-        <div v-if="isSignup" class="form-group">
-          <label>{{ t('auth.confirmPassword') }}</label>
-          <input
-            v-model="confirmPassword"
-            type="password"
-            class="input"
-            autocomplete="new-password"
-            required
-          />
-        </div>
-
-        <div v-if="error" class="error-message">{{ error }}</div>
-
-        <button type="submit" class="btn btn-primary login-btn" :disabled="loading">
-          <span v-if="loading" class="spinner" style="width:14px;height:14px;border-width:2px;"></span>
-          {{ isSignup ? t('auth.signupButton') : t('auth.loginButton') }}
-        </button>
-      </form>
-
-      <div class="divider">
-        <span>{{ t('auth.or') }}</span>
-      </div>
+      <div v-if="error" class="error-message">{{ error }}</div>
 
       <div class="social-buttons">
         <button class="btn social-btn kakao-btn" @click="handleSocialLogin('kakao')" :disabled="!!socialLoading">
@@ -146,10 +56,6 @@ function toggleMode() {
           <span v-else>{{ t('auth.loginWithGoogle') }}</span>
         </button>
       </div>
-
-      <button class="switch-btn" @click="toggleMode">
-        {{ isSignup ? t('auth.switchToLogin') : t('auth.switchToSignup') }}
-      </button>
     </div>
   </div>
 </template>
@@ -188,78 +94,13 @@ function toggleMode() {
   margin-bottom: 24px;
 }
 
-.login-form {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.form-group label {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--text-secondary);
-}
-
-.login-btn {
-  width: 100%;
-  padding: 10px;
-  font-size: 15px;
-  font-weight: 600;
-  margin-top: 4px;
-}
-
 .error-message {
   color: var(--danger);
   font-size: 13px;
   padding: 8px 12px;
   background: rgba(239, 68, 68, 0.1);
   border-radius: var(--radius-sm);
-}
-
-.success-message {
-  color: var(--success);
-  font-size: 14px;
-  padding: 12px;
-  background: rgba(34, 197, 94, 0.1);
-  border-radius: var(--radius-sm);
-  text-align: center;
   margin-bottom: 16px;
-}
-
-.switch-btn {
-  display: block;
-  width: 100%;
-  margin-top: 16px;
-  background: none;
-  border: none;
-  color: var(--accent);
-  font-size: 13px;
-  font-weight: 500;
-  cursor: pointer;
-  padding: 4px;
-}
-
-.divider {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin: 20px 0;
-  color: var(--text-secondary);
-  font-size: 13px;
-}
-
-.divider::before,
-.divider::after {
-  content: '';
-  flex: 1;
-  height: 1px;
-  background: var(--border);
 }
 
 .social-buttons {
@@ -274,8 +115,8 @@ function toggleMode() {
   justify-content: center;
   gap: 8px;
   width: 100%;
-  padding: 10px;
-  font-size: 14px;
+  padding: 12px;
+  font-size: 15px;
   font-weight: 600;
   border-radius: var(--radius-sm);
   border: 1px solid var(--border);
@@ -301,9 +142,5 @@ function toggleMode() {
 .google-btn {
   background: #fff;
   color: #333;
-}
-
-.switch-btn:hover {
-  text-decoration: underline;
 }
 </style>
