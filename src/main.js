@@ -9,4 +9,10 @@ const app = createApp(App)
 app.use(createPinia())
 app.use(router)
 app.use(i18n)
-app.mount('#app')
+
+// Auth 초기화 후 앱 마운트
+import { useAuthStore } from './stores/auth'
+const authStore = useAuthStore()
+authStore.init().then(() => {
+  app.mount('#app')
+})

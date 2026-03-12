@@ -1,11 +1,16 @@
 <script setup>
-import { ref, provide, watchEffect } from 'vue'
-import { useRouter } from 'vue-router'
+import { ref, provide, watchEffect, computed } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { setLocale, getLocale } from './i18n'
+import { useAuthStore } from './stores/auth'
 
 const router = useRouter()
+const route = useRoute()
 const { t } = useI18n()
+const authStore = useAuthStore()
+
+const showNavbar = computed(() => route.name !== 'Login')
 
 const isDark = ref(localStorage.getItem('theme') !== 'light')
 const currentLocale = ref(getLocale())
@@ -30,7 +35,7 @@ function toggleLocale() {
 
 <template>
   <div class="app-layout">
-    <header class="navbar">
+    <header v-if="showNavbar" class="navbar">
       <div class="navbar-inner container">
         <router-link to="/" class="navbar-brand">
           <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
@@ -56,6 +61,12 @@ function toggleLocale() {
         </nav>
 
         <div class="navbar-actions">
+          <span v-if="authStore.isAuthenticated" class="user-email">{{ authStore.userEmail }}</span>
+          <button v-if="authStore.isAuthenticated" class="btn-icon logout-btn" @click="authStore.logout()" :title="t('auth.logout')">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
+            </svg>
+          </button>
           <button class="btn-icon lang-toggle" @click="toggleLocale" :title="currentLocale === 'kr' ? 'English' : '한국어'">
             {{ currentLocale === 'kr' ? 'EN' : 'KR' }}
           </button>
@@ -150,6 +161,20 @@ function toggleLocale() {
   align-items: center;
   gap: 4px;
   flex-shrink: 0;
+}
+
+.user-email {
+  font-size: 12px;
+  color: var(--text-secondary);
+  max-width: 140px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.logout-btn {
+  width: 36px;
+  height: 36px;
 }
 
 .lang-toggle {

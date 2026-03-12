@@ -69,6 +69,22 @@
     "down": "하락",
     "neutral": "보합"
   },
+  "auth": {
+    "login": "로그인",
+    "signup": "회원가입",
+    "email": "이메일",
+    "password": "비밀번호",
+    "confirmPassword": "비밀번호 확인",
+    "loginButton": "로그인",
+    "signupButton": "회원가입",
+    "switchToSignup": "계정이 없으신가요? 회원가입",
+    "switchToLogin": "이미 계정이 있으신가요? 로그인",
+    "logout": "로그아웃",
+    "loginFailed": "로그인에 실패했습니다.",
+    "signupFailed": "회원가입에 실패했습니다.",
+    "passwordMismatch": "비밀번호가 일치하지 않습니다.",
+    "checkEmail": "이메일을 확인해주세요."
+  },
   "reason": {
     "rsi_oversold": "RSI 과매도 구간",
     "rsi_near_oversold": "RSI 매도 근접",
