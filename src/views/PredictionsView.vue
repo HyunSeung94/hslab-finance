@@ -13,25 +13,26 @@ onMounted(async () => {
 
 const filteredPredictions = computed(() => {
   if (!filterSymbol.value) return store.predictions
+  const q = filterSymbol.value.toLowerCase()
   return store.predictions.filter(p =>
-    p.symbol?.toLowerCase().includes(filterSymbol.value.toLowerCase()) ||
-    p.name?.toLowerCase().includes(filterSymbol.value.toLowerCase())
+    p.symbol?.toLowerCase().includes(q) ||
+    p.symbol_name?.toLowerCase().includes(q)
   )
 })
 
 const stats = computed(() => store.predictionStats)
 
-function signalClass(signal) {
-  if (signal === '상승') return 'price-up'
-  if (signal === '하락') return 'price-down'
+function signalClass(direction) {
+  if (direction === 'up') return 'price-up'
+  if (direction === 'down') return 'price-down'
   return 'price-neutral'
 }
 
 function resultBadge(pred) {
-  if (pred.actualResult === null || pred.actualResult === undefined) {
+  if (!pred.result) {
     return { class: 'badge-neutral', text: t('predictions.pending') }
   }
-  if (pred.isCorrect) {
+  if (pred.result === 'correct') {
     return { class: 'badge-success', text: t('predictions.correctResult') }
   }
   return { class: 'badge-danger', text: t('predictions.wrongResult') }
@@ -66,7 +67,7 @@ function formatPrice(price) {
       </div>
       <div class="card stat-card">
         <span class="stat-label">{{ t('predictions.evaluated') }}</span>
-        <span class="stat-value">{{ stats.evaluated }}</span>
+        <span class="stat-value">{{ stats.resolved }}</span>
       </div>
       <div class="card stat-card">
         <span class="stat-label">{{ t('predictions.correct') }}</span>
@@ -74,8 +75,8 @@ function formatPrice(price) {
       </div>
       <div class="card stat-card">
         <span class="stat-label">{{ t('predictions.accuracy') }}</span>
-        <span class="stat-value" :style="{ color: stats.accuracy >= 50 ? 'var(--success)' : 'var(--danger)' }">
-          {{ stats.accuracy }}%
+        <span class="stat-value" :style="{ color: (stats.accuracy || 0) >= 50 ? 'var(--success)' : 'var(--danger)' }">
+          {{ stats.accuracy || 0 }}%
         </span>
       </div>
     </div>
@@ -110,17 +111,17 @@ function formatPrice(price) {
         </thead>
         <tbody>
           <tr v-for="pred in filteredPredictions" :key="pred.id">
-            <td class="date-cell">{{ formatDate(pred.createdAt) }}</td>
+            <td class="date-cell">{{ formatDate(pred.created_at) }}</td>
             <td>
               <div class="stock-cell">
                 <span class="cell-symbol">{{ pred.symbol }}</span>
-                <span class="cell-name">{{ pred.name }}</span>
+                <span class="cell-name">{{ pred.symbol_name }}</span>
               </div>
             </td>
-            <td class="price-cell">{{ formatPrice(pred.price) }}</td>
+            <td class="price-cell">{{ formatPrice(pred.target_price) }}</td>
             <td>
-              <span :class="['signal-text', signalClass(pred.signal)]">
-                {{ pred.signal }}
+              <span :class="['signal-text', signalClass(pred.direction)]">
+                {{ t(`signal.${pred.direction}`) }}
               </span>
             </td>
             <td>

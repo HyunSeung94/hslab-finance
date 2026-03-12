@@ -6,6 +6,7 @@ export const useStockStore = defineStore('stock', {
     watchlist: [],
     currentStock: null,
     predictions: [],
+    predictionStatsData: null,
     loading: false,
     lastUpdated: null
   }),
@@ -16,10 +17,7 @@ export const useStockStore = defineStore('stock', {
     },
 
     predictionStats: (state) => {
-      const total = state.predictions.filter(p => p.actualResult !== null && p.actualResult !== undefined).length
-      const correct = state.predictions.filter(p => p.isCorrect).length
-      const accuracy = total > 0 ? ((correct / total) * 100).toFixed(1) : 0
-      return { total: state.predictions.length, evaluated: total, correct, accuracy }
+      return state.predictionStatsData || { total: 0, resolved: 0, correct: 0, accuracy: 0 }
     }
   },
 
@@ -100,7 +98,8 @@ export const useStockStore = defineStore('stock', {
       try {
         const params = symbol ? { symbol } : {}
         const { data } = await api.get('/predictions', { params })
-        this.predictions = data
+        this.predictions = data.predictions || []
+        this.predictionStatsData = data.stats || null
       } catch (error) {
         console.error('Failed to fetch predictions:', error)
       } finally {
