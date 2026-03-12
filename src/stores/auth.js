@@ -48,6 +48,17 @@ export const useAuthStore = defineStore('auth', {
       return data
     },
 
+    async loginWithProvider(provider) {
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider,
+        options: {
+          redirectTo: window.location.origin,
+        },
+      })
+      if (error) throw error
+      return data
+    },
+
     async logout() {
       await supabase.auth.signOut()
       this.session = null

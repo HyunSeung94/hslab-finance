@@ -83,7 +83,10 @@
     "loginFailed": "Login failed.",
     "signupFailed": "Sign up failed.",
     "passwordMismatch": "Passwords do not match.",
-    "checkEmail": "Please check your email to confirm."
+    "checkEmail": "Please check your email to confirm.",
+    "loginWithKakao": "Login with Kakao",
+    "loginWithGoogle": "Login with Google",
+    "or": "or"
   },
   "reason": {
     "rsi_oversold": "RSI oversold zone",

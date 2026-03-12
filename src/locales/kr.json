@@ -83,7 +83,10 @@
     "loginFailed": "로그인에 실패했습니다.",
     "signupFailed": "회원가입에 실패했습니다.",
     "passwordMismatch": "비밀번호가 일치하지 않습니다.",
-    "checkEmail": "이메일을 확인해주세요."
+    "checkEmail": "이메일을 확인해주세요.",
+    "loginWithKakao": "카카오로 로그인",
+    "loginWithGoogle": "Google로 로그인",
+    "or": "또는"
   },
   "reason": {
     "rsi_oversold": "RSI 과매도 구간",
