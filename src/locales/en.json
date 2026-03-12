@@ -16,7 +16,9 @@
     "loadingWatchlist": "Loading watchlist...",
     "emptyTitle": "No stocks in your watchlist",
     "minuteShort": "m",
-    "emptyDesc": "Search for stocks above to start tracking prices and predictions."
+    "emptyDesc": "Search for stocks above to start tracking prices and predictions.",
+    "todayVisitors": "Today",
+    "totalVisitors": "Total"
   },
   "stock": {
     "backToDashboard": "Back to Dashboard",

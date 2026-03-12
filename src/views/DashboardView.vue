@@ -12,6 +12,7 @@ const searchResults = ref([])
 const searching = ref(false)
 const showResults = ref(false)
 const lastUpdated = ref(null)
+const visitorStats = ref(null)
 let refreshInterval = null
 
 function updateTimestamp() {
@@ -32,6 +33,7 @@ async function refreshAllPrices() {
 }
 
 onMounted(async () => {
+  api.post('/visitors').then(({ data }) => { visitorStats.value = data }).catch(() => {})
   await store.fetchWatchlist()
   updateTimestamp()
   refreshInterval = setInterval(() => {
@@ -97,6 +99,17 @@ function handleInput() {
       <div>
         <h1 class="page-title">{{ t('dashboard.title') }}</h1>
         <p class="page-subtitle">{{ t('dashboard.subtitle') }}</p>
+      </div>
+      <div v-if="visitorStats" class="visitor-stats">
+        <div class="visitor-item">
+          <span class="visitor-label">{{ t('dashboard.todayVisitors') }}</span>
+          <span class="visitor-count">{{ visitorStats.today.toLocaleString() }}</span>
+        </div>
+        <div class="visitor-divider"></div>
+        <div class="visitor-item">
+          <span class="visitor-label">{{ t('dashboard.totalVisitors') }}</span>
+          <span class="visitor-count">{{ visitorStats.total.toLocaleString() }}</span>
+        </div>
       </div>
     </div>
 
@@ -180,7 +193,46 @@ function handleInput() {
 
 <style scoped>
 .dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
   margin-bottom: 24px;
+}
+
+.visitor-stats {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 10px 18px;
+}
+
+.visitor-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.visitor-label {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.visitor-count {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.visitor-divider {
+  width: 1px;
+  height: 28px;
+  background: var(--border-color);
 }
 
 .page-title {
